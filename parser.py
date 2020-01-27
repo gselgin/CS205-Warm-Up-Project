@@ -1,12 +1,9 @@
-# Greg Elgin
+# Greg Elgin,
 # CS 205: Warm up project
 # Parsing system to take a string input and output a SQL Query
 
 
-# TOKENS: Region, Date, type (conventional vs organic),
-
-
-
+# TODO: TOKENS: Region, Month, type (conventional vs organic), more?
 def main():
     get_info()
 
@@ -37,8 +34,14 @@ def parse(user_input):
     # If the first word in the search is region
     # Then the first part of the query is region followed by the region name
     if input_list[0] == "region":
-        user_query_list.append("region")
+        user_query_list.append("SELECT")
         user_query_list.append(input_list[1])
+        user_query_list.append("FROM")
+        user_query_list.append("region")
+
+        if input_list[2] == "type":
+            user_query_list.append("WHERE")
+            user_query_list.append(input_list[3] + "=type")
 
     # Turn query list into query string
     for word in user_query_list:
