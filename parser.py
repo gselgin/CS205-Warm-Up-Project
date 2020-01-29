@@ -1,26 +1,31 @@
 # Greg Elgin,
 # CS 205: Warm up project
-# Parsing system to take a string input and output a SQL Query
+# Parsing system to take a string input and return token values
+# Calls query function with tokens as parameters
 
 
-# TODO: TOKENS: Region, Month, type (conventional vs organic), more?
-# region (type, month)
-# or 
-# sales (all of fields)
+# TODO: TOKENS: Region, Month, type (conventional vs organic), more? Figure out with SQL team
+# token list index values region
+# [region, ]
+# token list index values sales
+# [type, month, price, num sales, ]
+
+
 def main():
+    print()
+    print("Welcome to the Avocado data parsing program")
     get_info()
 
     user_input = get_user_input()
 
-    user_query = parse(user_input)
-
-    print(user_query)
+    parse(user_input)
 
 
 def get_info():
     print()
-    print("Welcome to the Avocado data parsing program")
-    print("You can search for avocado price and sales by region and date")
+    print("You can search avocado date by region or sales")
+    print("Begin your search by typing 'region' followed by a region name")
+    print("or 'sales' followed by the avocado type (conventional or organic)")
     # TODO: Add more info
 
 
@@ -34,39 +39,43 @@ def parse(user_input):
     valid = False
 
     while not valid:
-        # Initialize local variables
         input_list = list(user_input.split(" "))
-        user_query_list = list()
-        user_query = ""
+        tokens = list()
 
         # If the first word in the search is "region"
-        # Then the first part of the query is "region" followed by the region name
+        # Then the first token is the word after region
         if input_list[0] == "region":
             valid = True
-            user_query_list.append("SELECT")
-            user_query_list.append(input_list[1])
-            user_query_list.append("FROM")
-            user_query_list.append("region")
+            tokens.append(input_list[1])
 
-            if len(input_list) >= 4:
-                if input_list[2] == "type":
-                    user_query_list.append("WHERE")
-                    user_query_list.append("type=" + input_list[3])
-            else:
-                print("empty")
 
-        if len(user_query_list) == 0:
+            query_region(tokens)
+
+
+        # If the first word in the search is "sales"
+        # Then the first token is the word after sales (conventional or organic)
+        elif input_list[0] == "sales":
+            valid = True
+            tokens.append(input_list[1])
+            query_sales(tokens)
+
+        else:
             valid = False
+            print("Invalid search: ")
             get_info()
             get_user_input()
 
 
-    # Turn query list into query string
-    for word in user_query_list:
-        user_query += word + " "
 
-    # Return query
-    return user_query
+
+
+# FOR TESTING PURPOSES
+def query_sales(tokens):
+    print ("query_sales")
+    print(tokens)
+def query_region(tokens):
+    print ("query_region")
+    print(tokens)
 
 
 main()
