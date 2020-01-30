@@ -22,6 +22,8 @@ december_con<-december_con%>%
   group_by(region)%>%
   summarise_all(funs(mean))
 
+december_con$Total.Volume<-december_con$Total.Volume*31
+
 december_con$Date="2015-12"
 december_con$type="conventional"
 
@@ -36,6 +38,8 @@ december_org<-december_org%>%
   select(AveragePrice, Total.Volume, region) %>%
   group_by(region)%>%
   summarise_all(funs(mean))
+
+december_org$Total.Volume<-december_org$Total.Volume*31
 
 december_org$Date="2015-12"
 december_org$type="organic"
@@ -53,6 +57,8 @@ november_con<-november_con%>%
   group_by(region)%>%
   summarise_all(funs(mean))
 
+november_con$Total.Volume<-november_con$Total.Volume*30
+
 november_con$Date="2015-11"
 november_con$type="conventional"
 
@@ -67,6 +73,8 @@ november_org<-november_org%>%
   select(AveragePrice, Total.Volume, region) %>%
   group_by(region)%>%
   summarise_all(funs(mean))
+
+november_org$Total.Volume<-november_org$Total.Volume*30
 
 november_org$Date="2015-11"
 november_org$type="organic"
@@ -84,6 +92,8 @@ october_con<-october_con%>%
   group_by(region)%>%
   summarise_all(funs(mean))
 
+october_con$Total.Volume<-october_con$Total.Volume*31
+
 october_con$Date="2015-10"
 october_con$type="conventional"
 
@@ -98,6 +108,8 @@ october_org<-october_org%>%
   select(AveragePrice, Total.Volume, region) %>%
   group_by(region)%>%
   summarise_all(funs(mean))
+
+october_org$Total.Volume<-october_org$Total.Volume*31
 
 october_org$Date="2015-10"
 october_org$type="organic"
@@ -115,6 +127,8 @@ september_con<-september_con%>%
   group_by(region)%>%
   summarise_all(funs(mean))
 
+september_con$Total.Volume<-september_con$Total.Volume*30
+
 september_con$Date="2015-09"
 september_con$type="conventional"
 
@@ -129,6 +143,8 @@ september_org<-september_org%>%
   select(AveragePrice, Total.Volume, region) %>%
   group_by(region)%>%
   summarise_all(funs(mean))
+
+september_org$Total.Volume<-september_org$Total.Volume*30
 
 september_org$Date="2015-09"
 september_org$type="organic"
@@ -149,6 +165,8 @@ august_con<-august_con%>%
 august_con$Date="2015-08"
 august_con$type="conventional"
 
+august_con$Total.Volume<-august_con$Total.Volume*31
+
 write.csv(august_con, "C:/Users/skenn/Desktop/UVM/CS 205/Warm-Up Project/august_con.csv")
 
 august_org<-data %>%
@@ -160,6 +178,8 @@ august_org<-august_org%>%
   select(AveragePrice, Total.Volume, region) %>%
   group_by(region)%>%
   summarise_all(funs(mean))
+
+august_org$Total.Volume<-august_org$Total.Volume*31
 
 august_org$Date="2015-08"
 august_org$type="organic"
@@ -177,6 +197,8 @@ july_con<-july_con%>%
   group_by(region)%>%
   summarise_all(funs(mean))
 
+july_con$Total.Volume<-july_con$Total.Volume*31
+
 july_con$Date="2015-07"
 july_con$type="conventional"
 
@@ -191,6 +213,8 @@ july_org<-july_org%>%
   select(AveragePrice, Total.Volume, region) %>%
   group_by(region)%>%
   summarise_all(funs(mean))
+
+july_org$Total.Volume<-july_org$Total.Volume*31
 
 july_org$Date="2015-07"
 july_org$type="organic"
@@ -208,6 +232,8 @@ june_con<-june_con%>%
   group_by(region)%>%
   summarise_all(funs(mean))
 
+june_con$Total.Volume<-june_con$Total.Volume*30
+
 june_con$Date="2015-06"
 june_con$type="conventional"
 
@@ -222,6 +248,8 @@ june_org<-june_org%>%
   select(AveragePrice, Total.Volume, region) %>%
   group_by(region)%>%
   summarise_all(funs(mean))
+
+june_org$Total.Volume<-june_org$Total.Volume*30
 
 june_org$Date="2015-06"
 june_org$type="organic"
@@ -239,6 +267,8 @@ may_con<-may_con%>%
   group_by(region)%>%
   summarise_all(funs(mean))
 
+may_con$Total.Volume<-may_con$Total.Volume*31
+
 may_con$Date="2015-05"
 may_con$type="conventional"
 
@@ -253,6 +283,8 @@ may_org<-may_org%>%
   select(AveragePrice, Total.Volume, region) %>%
   group_by(region)%>%
   summarise_all(funs(mean))
+
+may_org$Total.Volume<-may_org$Total.Volume*31
 
 may_org$Date="2015-05"
 may_org$type="organic"
@@ -270,6 +302,8 @@ april_con<-april_con%>%
   group_by(region)%>%
   summarise_all(funs(mean))
 
+april_con$Total.Volume<-april_con$Total.Volume*30
+
 april_con$Date="2015-04"
 april_con$type="conventional"
 
@@ -284,6 +318,8 @@ april_org<-april_org%>%
   select(AveragePrice, Total.Volume, region) %>%
   group_by(region)%>%
   summarise_all(funs(mean))
+
+april_org$Total.Volume<-april_org$Total.Volume*30
 
 april_org$Date="2015-04"
 april_org$type="organic"
@@ -301,6 +337,8 @@ march_con<-march_con%>%
   group_by(region)%>%
   summarise_all(funs(mean))
 
+march_con$Total.Volume<-march_con$Total.Volume*31
+
 march_con$Date="2015-03"
 march_con$type="conventional"
 
@@ -315,6 +353,8 @@ march_org<-march_org%>%
   select(AveragePrice, Total.Volume, region) %>%
   group_by(region)%>%
   summarise_all(funs(mean))
+
+march_org$Total.Volume<-march_org$Total.Volume*31
 
 march_org$Date="2015-03"
 march_org$type="organic"
@@ -332,6 +372,8 @@ february_con<-february_con%>%
   group_by(region)%>%
   summarise_all(funs(mean))
 
+february_con$Total.Volume<-february_con$Total.Volume*28
+
 february_con$Date="2015-02"
 february_con$type="conventional"
 
@@ -346,6 +388,8 @@ february_org<-february_org%>%
   select(AveragePrice, Total.Volume, region) %>%
   group_by(region)%>%
   summarise_all(funs(mean))
+
+february_org$Total.Volume<-february_org$Total.Volume*28
 
 february_org$Date="2015-02"
 february_org$type="organic"
@@ -363,6 +407,8 @@ january_con<-january_con%>%
   group_by(region)%>%
   summarise_all(funs(mean))
 
+january_con$Total.Volume<-january_con$Total.Volume*31
+
 january_con$Date="2015-01"
 january_con$type="conventional"
 
@@ -377,6 +423,8 @@ january_org<-january_org%>%
   select(AveragePrice, Total.Volume, region) %>%
   group_by(region)%>%
   summarise_all(funs(mean))
+
+january_org$Total.Volume<-january_org$Total.Volume*31
 
 january_org$Date="2015-01"
 january_org$type="organic"
