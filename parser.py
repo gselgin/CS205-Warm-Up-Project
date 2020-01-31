@@ -24,7 +24,7 @@ def get_info():
     print("You can search avocado date by region or sales")
     print("Begin your search by typing 'region' followed by a region name")
     print("or 'sales' followed by the avocado type (conventional or organic)")
-    print("Enter 'get region' for list of regions")
+    print("Enter 'region list' for list of regions")
     print("Enter q to quit")
     # TODO: Add more info
 
@@ -52,6 +52,7 @@ def get_region_list():
         "Northeast",
         "NorthernNewEngland"
     ]
+    return region_list
 
 
 def parse():
@@ -71,8 +72,14 @@ def parse():
         # Then the first token is the word after region
         if input_list[0] == "region":
             valid = True
+            search = True
 
             tokens.append(input_list[1])
+
+            if len(input_list) == 2 and input_list[1] == "list":
+                print("Region list: ")
+                print(get_region_list())
+                search = False
 
             # placeholder tokens
             token_list = ["averagePrice", "Total Volume", "Date", "type"]
@@ -87,7 +94,7 @@ def parse():
                 else:
                     valid = False
                     print("Invalid token in region")
-            else:
+            elif search:
                 query_region(tokens)
 
         # If the first word in the search is "sales"
