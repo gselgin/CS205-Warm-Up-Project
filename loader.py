@@ -53,4 +53,4 @@ def loadTables(regionFile, salesFile):
     conn.close()
     regions.close()
     sales.close()
-loadTables("avocado-region-data.csv", "avocado-sales-data.csv")
+
