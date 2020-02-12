@@ -9,12 +9,19 @@ import shlex
 region_list = ["Great Lakes", "Harrisburg Scranton", "Hartford Springfield", "Houston", "Indianapolis", "Jacksonville",
                "Las Vegas", "Los Angeles", "Louisville", "Miami Ft Lauderdale", "Nashville", "New Orleans Mobile",
                "New York", "Northeast", "Northern New England"]
+# Initialize search to allow for user to quit without searching
+search = False
+# Initialize tokens
+tokens = list()
 
 
 def main():
     print("Welcome to the Avocado data parsing program")
     get_info()
     parse()
+
+    if search:
+        query(tokens)
 
 
 def get_info():
@@ -37,16 +44,15 @@ def get_region_list():
 def parse():
     # Initialize valid to enter while loop
     valid = False
-    # Initialize search to allow for user to quit without searching
-    search = False
+    global search
 
     while not valid:
 
-        # get user input, turn into list of words, create empty token list
+        # get user input, turn into list of words, initialize empty token list
         user_input = get_user_input()
         user_input = user_input.lower()
         input_list = shlex.split(user_input)
-        tokens = list()
+        tokens.clear()
 
         # Save length of user input
         length = len(input_list)
@@ -163,13 +169,10 @@ def parse():
             print("Or input 'q' to quit")
             valid = False
 
-    if search:
-        query(tokens)
-
 
 # FOR TESTING PURPOSES
-def query(tokens):
-    print(tokens)
+def query(tokens_list):
+    print(tokens_list)
 
 
 main()
