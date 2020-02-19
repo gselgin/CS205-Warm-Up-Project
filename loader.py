@@ -3,6 +3,7 @@ import sqlite3
 def loadTables(regionFile, salesFile):
     regions  = open(regionFile, "r")
     sales  = open(salesFile, "r")
+    #create or connect to database
     conn = sqlite3.connect('Avocado.db')
     c = conn.cursor()
     
@@ -38,7 +39,6 @@ def loadTables(regionFile, salesFile):
         regionData = line.strip("\n")
         regionData = regionData.strip()
         regionData = regionData.split(",")
-        print(regionData)
         c.execute('INSERT INTO Region VALUES (?, ?, ?, ?, ?, ?)', regionData)
     #fill sales table
     for line in sales:
