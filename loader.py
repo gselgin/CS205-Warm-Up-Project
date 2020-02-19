@@ -38,7 +38,6 @@ def loadTables(regionFile, salesFile):
         regionData = line.strip("\n")
         regionData = regionData.strip()
         regionData = regionData.split(",")
-        print(regionData)
         c.execute('INSERT INTO Region VALUES (?, ?, ?, ?, ?, ?)', regionData)
     #fill sales table
     for line in sales:
@@ -53,4 +52,4 @@ def loadTables(regionFile, salesFile):
     conn.close()
     regions.close()
     sales.close()
-
+loadTables("avocado-region-data.csv", "avocado-sales-data.csv")
