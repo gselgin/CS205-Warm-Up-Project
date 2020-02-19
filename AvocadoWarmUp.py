@@ -112,6 +112,7 @@ def query(tokens_list, cursor):
     # Determine which table is being queried
     if tokens_list[2] == '':
         get_region_data(tokens_list, cursor)
+    # TODO: get sales data
 
 
 def get_region_data(query_list, cursor):
