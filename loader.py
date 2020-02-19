@@ -3,6 +3,7 @@ import sqlite3
 def loadTables(regionFile, salesFile):
     regions  = open(regionFile, "r")
     sales  = open(salesFile, "r")
+    #create or connect to database
     conn = sqlite3.connect('Avocado.db')
     c = conn.cursor()
     
@@ -52,4 +53,4 @@ def loadTables(regionFile, salesFile):
     conn.close()
     regions.close()
     sales.close()
-loadTables("avocado-region-data.csv", "avocado-sales-data.csv")
+

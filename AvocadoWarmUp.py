@@ -1,10 +1,5 @@
-# Greg Elgin, Connor Hamilton
-# CS 205: Warm up project
-# Last Updated: 02/10/20
-# Parsing system to take a string input and return token values
-# Calls query function with tokens as parameters
-
 import shlex
+import sqlite3
 
 region_list = ["Great Lakes", "Harrisburg Scranton", "Hartford Springfield", "Houston", "Indianapolis", "Jacksonville",
                "Las Vegas", "Los Angeles", "Louisville", "Miami Ft Lauderdale", "Nashville", "New Orleans Mobile",
@@ -13,9 +8,26 @@ region_list = ["Great Lakes", "Harrisburg Scranton", "Hartford Springfield", "Ho
 search = False
 # Initialize tokens
 tokens = list()
+#keep track if the user has loaded the data into the database
+dataLoaded = False
 
-
-
+def main():
+    
+    cursor = ""
+    print("Welcome to the Avocado data parsing program")
+    while parse() != 0:
+        if search:
+            if dataLoaded == False:
+                print("please enter 'Load Data' before attempting to seach the database")
+            else:
+                if cursor == "":
+                    conn = sqlite3.connect('Avocado.db')
+                    cursor = conn.cursor()
+                query(tokens, cursor)
+    
+    if cursor != "":
+        conn.close()
+    
 
 def get_info():
     print()
@@ -33,11 +45,103 @@ def get_user_input():
 def get_region_list():
     return region_list
 
+def loadTables(regionFile, salesFile):
+    regions  = open(regionFile, "r")
+    sales  = open(salesFile, "r")
+    #create or connect to database
+    conn = sqlite3.connect('Avocado.db')
+    c = conn.cursor()
+    
+    #drop tables
+    c.execute('DROP TABLE IF EXISTS region')
+    c.execute('DROP TABLE IF EXISTS sales')
+    
+    #create new tables
+    c.execute('''CREATE TABLE Region
+        (pmkRegionID int NOT NULL,
+        fldRegionName varchar(64),
+        fldAvgPriceCon smallmoney,
+        fldAvgPriceOrg smallmoney,
+        pfkBestMonConID int,
+        pfkBestMonOrgID int,
+        PRIMARY KEY (pmkRegionID),
+        FOREIGN KEY (pfkBestMonConID) REFERENCES Sales(pmkSalesID),
+        FOREIGN KEY (pfkBestMonOrgID) REFERENCES Sales(pmkSalesID))''')
+    
+    c.execute('''CREATE TABLE Sales
+        (pmkSalesID int NOT NULL,
+        pfkRegionID int NOT NULL,
+        fldAvgPrice smallmoney,
+        fldTotalVolume int,
+        fldMonth tinyint,
+        fldType varchar(64),
+        PRIMARY KEY (pmkSalesID),
+        FOREIGN KEY (pfkRegionID) REFERENCES Region(pmkRegionID))''')
 
+    
+    #fill region table
+    for line in regions:
+        regionData = line.strip("\n")
+        regionData = regionData.strip()
+        regionData = regionData.split(",")
+        c.execute('INSERT INTO Region VALUES (?, ?, ?, ?, ?, ?)', regionData)
+    #fill sales table
+    for line in sales:
+        saleData = line.strip("\n")
+        saleData = saleData.split(",")
+        c.execute('INSERT INTO Sales VALUES (?, ?, ?, ?, ?, ?)', saleData)
+    
+    #save changes
+    conn.commit()
+    
+    #close connection and files
+    conn.close()
+    regions.close()
+    sales.close()
+
+    
+def query(tokens_list, cursor):
+    #print statement for testing
+    #print(tokens_list)
+    
+    #deterime which table is being queried
+    if tokens_list[2] == '':
+        getRegionData(tokens_list, cursor)
+        
+    
+def getRegionData(queryList, cursor):
+    
+    #choose and execute correct query for avg price
+    if queryList[0] == "AveragePrice":
+        if queryList[3] == "organic":
+            cursor.execute('SELECT fldAvgPriceOrg FROM Region WHERE fldRegionName = ?', queryList[1:2])
+        else:
+            cursor.execute('SELECT fldAvgPriceCon FROM Region WHERE fldRegionName = ?', queryList[1:2])
+        #get result
+        result = cursor.fetchone()[0]
+        #display and format result
+        print("$",result,sep = "")
+    #choose and execute correct query for avg price
+    if queryList[0] == "BestMonth":
+        if queryList[3] == "organic":
+            cursor.execute('''SELECT Sales.fldMonth, Sales.fldTotalVolume FROM Region
+                           INNER JOIN Sales
+                           ON Region.pfkBestMonOrgID = Sales.pmkSalesID
+                           WHERE fldRegionName = ?''', queryList[1:2])
+        else:
+            cursor.execute('''SELECT Sales.fldMonth, Sales.fldTotalVolume FROM Region
+                           INNER JOIN Sales
+                           ON Region.pfkBestMonConID = Sales.pmkSalesID
+                           WHERE fldRegionName = ?''', queryList[1:2])
+        #get result
+        result = cursor.fetchone()
+        #display and format
+        print("Month:",result[0],"Sales:",result[1])
+        
 def parse():
     # Initialize valid to enter while loop
     valid = False
-    global search
+    global search, dataLoaded
 
     while not valid:
         try:
@@ -45,6 +149,16 @@ def parse():
             # get user input, turn into list of words, initialize empty token list
             user_input = get_user_input()
             user_input = user_input.lower()
+            if user_input == "help":
+                get_info()
+                search = False
+                return 1
+            if user_input == "load data" and dataLoaded == False:
+                loadTables("avocado-region-data.csv", "avocado-sales-data.csv")
+                print("Data has been loaded")
+                dataLoaded = True
+                search = False
+                return 1
             input_list = shlex.split(user_input)
             tokens.clear()
 
@@ -159,6 +273,7 @@ def parse():
 
             # exit program if input is "q"
             elif length >= 1 and input_list[0] == "q":
+                return 0
                 valid = True
                 search = False
 
@@ -173,9 +288,7 @@ def parse():
             valid = False
 
 
-# FOR TESTING PURPOSES
-def query(tokens_list):
-    print(tokens_list)
 
 
 
+main()
