@@ -112,7 +112,8 @@ def query(tokens_list, cursor):
     # Determine which table is being queried
     if tokens_list[2] == '':
         get_region_data(tokens_list, cursor)
-
+    else:
+        get_sales_data(tokens_list, cursor)
 
 def get_region_data(query_list, cursor):
     # Choose and execute correct query for avg price
@@ -142,7 +143,27 @@ def get_region_data(query_list, cursor):
         # display and format
         print("Month:", result[0], "Sales:", result[1])
 
+def get_sales_data(queryList, c):
+    
+    if queryList[0] == "TotalVolume":
+        c.execute('''SELECT Sales.fldTotalVolume FROM Sales
+                INNER JOIN Region
+                ON Sales.pfkRegionID = Region.pmkRegionID
+                WHERE Sales.fldMonth == (?) AND Sales.fldType == (?) AND Region.fldRegionName == (?) ''',
+            (queryList[2], queryList[3], queryList[1]))
+        result = c.fetchone()[0]
+        print("Sales:",result)
+       
 
+    elif queryList[0] == "AveragePrice":
+        c.execute('''SELECT Sales.fldAvgPrice FROM Sales
+                INNER JOIN Region
+                ON Sales.pfkRegionID = Region.pmkRegionID
+                WHERE Sales.fldMonth == (?) AND Sales.fldType == (?) AND Region.fldRegionName == (?) ''',
+            (queryList[2], queryList[3], queryList[1]))
+        result = c.fetchone()[0]
+        print("$",result)
+        
 def parse():
     # Initialize valid to enter while loop
     valid = False
