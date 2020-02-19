@@ -39,7 +39,8 @@ def get_info():
     print()
     print("You can search for avocado average price, total volume, or best month (of sales)")
     print("Begin your search by specifying one of these fields followed by 'region' + region name")
-    print("You then enter month (1-12) followed by type (organic, conventional)")
+    print("You then enter month (1-12, optional for average price, not required for best month) "
+          "followed by type (organic, conventional)")
     print("Ex: total volume region 'New York' month 4 type organic")
     print("Enter 'region list' for a list of regions")
     print("Enter q to quit")
