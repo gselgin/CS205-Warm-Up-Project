@@ -43,6 +43,7 @@ def get_info():
           "followed by type (organic, conventional)")
     print("Ex: total volume region 'New York' month 4 type organic")
     print("Enter 'region list' for a list of regions")
+    print("Enter 'help' for help")
     print("Enter q to quit")
 
 
