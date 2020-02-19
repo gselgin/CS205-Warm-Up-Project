@@ -4,35 +4,41 @@ import sqlite3
 region_list = ["Great Lakes", "Harrisburg Scranton", "Hartford Springfield", "Houston", "Indianapolis", "Jacksonville",
                "Las Vegas", "Los Angeles", "Louisville", "Miami Ft Lauderdale", "Nashville", "New Orleans Mobile",
                "New York", "Northeast", "Northern New England"]
+
 # Initialize search to allow for user to quit without searching
 search = False
 # Initialize tokens
 tokens = list()
-#keep track if the user has loaded the data into the database
+# Keep track if the user has loaded the data into the database
 dataLoaded = False
 
+
 def main():
-    
     cursor = ""
     print("Welcome to the Avocado data parsing program")
+    get_info()
+    print()
+    print("Please enter 'load date' to load the dataset")
     while parse() != 0:
         if search:
-            if dataLoaded == False:
-                print("please enter 'Load Data' before attempting to seach the database")
+            if not dataLoaded:
+                print("please enter 'Load Data' before attempting to search the database")
             else:
                 if cursor == "":
                     conn = sqlite3.connect('Avocado.db')
                     cursor = conn.cursor()
                 query(tokens, cursor)
-    
+
     if cursor != "":
         conn.close()
-    
+
 
 def get_info():
     print()
     print("You can search for avocado average price, total volume, or best month (of sales)")
     print("Begin your search by specifying one of these fields followed by 'region' + region name")
+    print("You then enter month (1-12) followed by type (organic, conventional)")
+    print("Ex: total volume region 'New York' month 4 type organic")
     print("Enter 'region list' for a list of regions")
     print("Enter q to quit")
 
@@ -45,18 +51,20 @@ def get_user_input():
 def get_region_list():
     return region_list
 
-def loadTables(regionFile, salesFile):
-    regions  = open(regionFile, "r")
-    sales  = open(salesFile, "r")
-    #create or connect to database
+
+def load_tables(region_file, sales_file):
+    regions = open(region_file, "r")
+    sales = open(sales_file, "r")
+
+    # Connect to database
     conn = sqlite3.connect('Avocado.db')
     c = conn.cursor()
-    
-    #drop tables
+
+    # Drop tables
     c.execute('DROP TABLE IF EXISTS region')
     c.execute('DROP TABLE IF EXISTS sales')
-    
-    #create new tables
+
+    # Create new tables
     c.execute('''CREATE TABLE Region
         (pmkRegionID int NOT NULL,
         fldRegionName varchar(64),
@@ -67,7 +75,7 @@ def loadTables(regionFile, salesFile):
         PRIMARY KEY (pmkRegionID),
         FOREIGN KEY (pfkBestMonConID) REFERENCES Sales(pmkSalesID),
         FOREIGN KEY (pfkBestMonOrgID) REFERENCES Sales(pmkSalesID))''')
-    
+
     c.execute('''CREATE TABLE Sales
         (pmkSalesID int NOT NULL,
         pfkRegionID int NOT NULL,
@@ -78,66 +86,63 @@ def loadTables(regionFile, salesFile):
         PRIMARY KEY (pmkSalesID),
         FOREIGN KEY (pfkRegionID) REFERENCES Region(pmkRegionID))''')
 
-    
-    #fill region table
+    # Fill region table
     for line in regions:
-        regionData = line.strip("\n")
-        regionData = regionData.strip()
-        regionData = regionData.split(",")
-        c.execute('INSERT INTO Region VALUES (?, ?, ?, ?, ?, ?)', regionData)
-    #fill sales table
+        region_data = line.strip("\n")
+        region_data = region_data.strip()
+        region_data = region_data.split(",")
+        c.execute('INSERT INTO Region VALUES (?, ?, ?, ?, ?, ?)', region_data)
+
+    # Fill sales table
     for line in sales:
-        saleData = line.strip("\n")
-        saleData = saleData.split(",")
-        c.execute('INSERT INTO Sales VALUES (?, ?, ?, ?, ?, ?)', saleData)
-    
-    #save changes
+        sale_data = line.strip("\n")
+        sale_data = sale_data.split(",")
+        c.execute('INSERT INTO Sales VALUES (?, ?, ?, ?, ?, ?)', sale_data)
+
+    # Save changes
     conn.commit()
-    
-    #close connection and files
+
+    # Close connection and files
     conn.close()
     regions.close()
     sales.close()
 
-    
+
 def query(tokens_list, cursor):
-    #print statement for testing
-    #print(tokens_list)
-    
-    #deterime which table is being queried
+    # Determine which table is being queried
     if tokens_list[2] == '':
-        getRegionData(tokens_list, cursor)
-        
-    
-def getRegionData(queryList, cursor):
-    
-    #choose and execute correct query for avg price
-    if queryList[0] == "AveragePrice":
-        if queryList[3] == "organic":
-            cursor.execute('SELECT fldAvgPriceOrg FROM Region WHERE fldRegionName = ?', queryList[1:2])
+        get_region_data(tokens_list, cursor)
+
+
+def get_region_data(query_list, cursor):
+    # Choose and execute correct query for avg price
+    if query_list[0] == "AveragePrice":
+        if query_list[3] == "organic":
+            cursor.execute('SELECT fldAvgPriceOrg FROM Region WHERE fldRegionName = ?', query_list[1:2])
         else:
-            cursor.execute('SELECT fldAvgPriceCon FROM Region WHERE fldRegionName = ?', queryList[1:2])
-        #get result
+            cursor.execute('SELECT fldAvgPriceCon FROM Region WHERE fldRegionName = ?', query_list[1:2])
+        # get result
         result = cursor.fetchone()[0]
-        #display and format result
-        print("$",result,sep = "")
-    #choose and execute correct query for avg price
-    if queryList[0] == "BestMonth":
-        if queryList[3] == "organic":
+        # display and format result
+        print("$", result, sep="")
+    # choose and execute correct query for avg price
+    if query_list[0] == "BestMonth":
+        if query_list[3] == "organic":
             cursor.execute('''SELECT Sales.fldMonth, Sales.fldTotalVolume FROM Region
                            INNER JOIN Sales
                            ON Region.pfkBestMonOrgID = Sales.pmkSalesID
-                           WHERE fldRegionName = ?''', queryList[1:2])
+                           WHERE fldRegionName = ?''', query_list[1:2])
         else:
             cursor.execute('''SELECT Sales.fldMonth, Sales.fldTotalVolume FROM Region
                            INNER JOIN Sales
                            ON Region.pfkBestMonConID = Sales.pmkSalesID
-                           WHERE fldRegionName = ?''', queryList[1:2])
-        #get result
+                           WHERE fldRegionName = ?''', query_list[1:2])
+        # get result
         result = cursor.fetchone()
-        #display and format
-        print("Month:",result[0],"Sales:",result[1])
-        
+        # display and format
+        print("Month:", result[0], "Sales:", result[1])
+
+
 def parse():
     # Initialize valid to enter while loop
     valid = False
@@ -149,14 +154,16 @@ def parse():
             # get user input, turn into list of words, initialize empty token list
             user_input = get_user_input()
             user_input = user_input.lower()
-            #display help information when prompted
+
+            # Display help information when prompted
             if user_input == "help":
                 get_info()
                 search = False
                 return 1
-            #load data from csv into data base when prompted
-            if user_input == "load data" and dataLoaded == False:
-                loadTables("avocado-region-data.csv", "avocado-sales-data.csv")
+
+            # Load data from csv into data base when prompted
+            if user_input == "load data" and not dataLoaded:
+                load_tables("avocado-region-data.csv", "avocado-sales-data.csv")
                 print("Data has been loaded")
                 dataLoaded = True
                 search = False
@@ -276,8 +283,6 @@ def parse():
             # exit program if input is "q"
             elif length >= 1 and input_list[0] == "q":
                 return 0
-                valid = True
-                search = False
 
             else:
                 print("Please begin your search with 'average price', 'total volume', or 'best month'")
@@ -288,9 +293,6 @@ def parse():
             print("Did you forget to close your quotes?")
 
             valid = False
-
-
-
 
 
 main()
