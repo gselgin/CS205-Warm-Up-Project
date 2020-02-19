@@ -149,10 +149,12 @@ def parse():
             # get user input, turn into list of words, initialize empty token list
             user_input = get_user_input()
             user_input = user_input.lower()
+            #display help information when prompted
             if user_input == "help":
                 get_info()
                 search = False
                 return 1
+            #load data from csv into data base when prompted
             if user_input == "load data" and dataLoaded == False:
                 loadTables("avocado-region-data.csv", "avocado-sales-data.csv")
                 print("Data has been loaded")
