@@ -1,7 +1,9 @@
 import shlex
 import sqlite3
 
-region_list = ["Great Lakes", "Harrisburg Scranton", "Hartford Springfield", "Houston", "Indianapolis", "Jacksonville",
+region_list = ["Albany", "Atlanta", "Baltimore Washington", "Boise", "Boston", "Buffalo Rochester", "California",
+               "Charlotte", "Chicago", "Cincinnati Dayton", "Columbus", "Dallas Ft Worth", "Denver", "Detroit", "Grand Rapids",
+               "Great Lakes", "Harrisburg Scranton", "Hartford Springfield", "Houston", "Indianapolis", "Jacksonville",
                "Las Vegas", "Los Angeles", "Louisville", "Miami Ft Lauderdale", "Nashville", "New Orleans Mobile",
                "New York", "Northeast", "Northern New England"]
 
